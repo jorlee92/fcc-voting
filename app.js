@@ -7,10 +7,13 @@ var dotenv = require('dotenv').config();
 var mongoose = require('mongoose');
 var mongoDBURL = process.env.MONGO_URL;
 var passport = require('passport');
+var bodyParser = require('body-parser');
+var session = require('express-session')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth');
+var pollRouter = require('./routes/poll');
 
 var app = express();
 
@@ -34,6 +37,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser());
+app.use(session({
+  secret: 'something random',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}))
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -41,6 +51,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/poll', pollRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

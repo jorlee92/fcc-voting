@@ -21,9 +21,14 @@ passport.use(new GoogleStrategy({
 
 
 /* POST auth */
-router.get('/', passport.authenticate(), function(req, res) {
-  res.send('Logged in?');
+router.get('/', passport.authenticate('google'), function(req, res) {
+    res.send(req.user)
+//   res.send('Logged in?');
 });
+
+router.get('/user', function(req, res){
+    res.send(req.user);
+})
 
 passport.serializeUser(function(user, done) {
     done(null, user);
